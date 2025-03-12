@@ -10,16 +10,20 @@ body {
     width: 100vw;
     overflow: hidden;
     background-color: #f0f0f0;
+    font-family: "Questa Sans", sans-serif;
 }
 
 .mobile-frame { /* Visuele presentering als een mobiel frame op web */
     position: relative;
     width: 428px;
-    height: 926px;
+    height: 926px !important;
     overflow: hidden;
     background-color: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 .content { /* samen met .mobile-frame maakt dit de content ruimte op. */
     margin: 0;
@@ -28,6 +32,9 @@ body {
     height: 1500px;
     background: transparent linear-gradient(155deg, #78FFFB 0%, #83FFF0 6%, #B8FFBD 37%, #DFFF97 65%, #F6FF80 86%, #FFFF78 100%) 100% 100% no-repeat padding-box;
     opacity: 1;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 }
 /* Generieke flexcontainers voor tekstuitlijning vanaf links of rechts */
 .flexcontainer-left {
@@ -80,10 +87,11 @@ font: italic normal 900 16px/20px Questa Sans;
 letter-spacing: 0px;
 color: #000000;
 opacity: 1;
+padding: 0 !important;
 }
 
 .titel {
-    font: normal normal 900 16px/20px Questa Sans;
+    font: normal normal 900 22px Questa Sans;
     color: #000000;
 }
 .beschrijving {
@@ -97,12 +105,8 @@ opacity: 1;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    padding-right: 5px;
 }
 .taak-tekst-flexbox {
-    flex: 1;
-}
-.taak-tekst .puntwaarde {
     flex: 1;
 }
 .taak-tekst .edit,
@@ -116,7 +120,6 @@ opacity: 1;
     letter-spacing: 0px;
     color: #fff;
     opacity: 1;
-    padding-top: 10px;
     }
 /* Homepage afbeeldingen*/
 .ollie-zwaaiend {
@@ -149,7 +152,7 @@ opacity: 1;
     border-radius: 20px 20px 0 20px;
     transform: translate(-50%, -50%);
     position: relative;
-    top: 13%;
+    top: 15%;
     left: 50%;
 }
 .textbox-wit::after {
@@ -171,6 +174,7 @@ background: #FF8700 0% 0% no-repeat padding-box;
 border-radius: 20px;
 opacity: 1;
 position: relative;
+margin-bottom: 20px;
 }
 .button-oranje:hover {
     background: #FF6A00;
@@ -262,20 +266,20 @@ ul {
 }
 
 .taak {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto auto;
+    align-items: center;
     background: White;
     padding: 10px;
     margin-top: 5px;
     margin-left: 15px;
     margin-right: 15px;
     max-width: 398px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     border-radius: 5px;
-    max-width: 100%;
     box-sizing: border-box;
     font-size: 16px;
     font: normal normal 900 16px/20px Questa Sans;
+    gap: 10px;
 }
 
 .taak button {
@@ -288,17 +292,49 @@ ul {
     cursor: pointer;
 }
 
+.taak .titel {
+    width: 50%;
+}
+.taak .puntwaarde {
+    background: #FFCF35;
+    color: #fff;
+    padding: 10px 10px 10px 15px;
+    border-radius: 25px;
+    font: normal normal 900 22px Questa Sans;
+    width: auto;
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+}
+.punt-icoon {
+    display: inline-block;
+    vertical-align: bottom;
+    padding-left: 5px;
+}
+.taak .beschrijving {
+    width: 60%;
+    margin-top: 10px;
+}
+.taak .deadline {
+    width: 40%;
+    margin-top: 10px;
+}
 .taak .status {
+    grid-column: span 2;
     background: #FF8700;
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 25px;
     cursor: pointer;
+    text-align: center;
+    width: 50%;
+    margin-top: 10px;
 }
 .taak .edit {
     background: #54B6F7;
     padding: 10px;
     border-radius: 25px;
     cursor: pointer;
+    width: 20%;
 }
 .taak .edit:hover {
     background: #2B76A8;
@@ -308,7 +344,40 @@ ul {
     padding: 10px;
     border-radius: 25px;
     cursor: pointer;
+    width: 20%;
 }
 .taak .delete:hover {
     background: #BF0060;
+}
+
+/* Navigatie buttons */
+.nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    width: 100%;
+    display: flex;
+    margin-top: auto;
+}
+
+.nav-button {
+    display: inline-block;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-bottom: 20px;
+    width: 90px;
+    height: 120px;
+}
+
+.nav-button img {
+    width: 100%;
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.nav-button:hover img {
+    transform: scale(1.1);
 }
