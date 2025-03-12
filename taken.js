@@ -1,29 +1,37 @@
-// Zodra de gebruiker op de knop klikt word de functie gestart.
 document.getElementById("add-taak").addEventListener("click", function() {
-    // met dit stukje code worden de waardes van de gebruiker ingevoerd bij het maken van een nieuwe taak.
     let titel = document.getElementById("taak-titel").value;
     let beschrijving = document.getElementById("taak-beschrijving").value;
     let deadline = document.getElementById("taak-deadline").value;
     let puntwaarde = document.getElementById("taak-puntwaarde").value;
 
-    // hiermee worden spaties verwijdert die de gebruiker invoert, als die er zijn. Je krijgt een melding als je niks invult.
+    // Controleer of een titel is ingevuld
     if (titel.trim() === "") return alert("Voer een titel in!");
 
-    // converteert de puntwaarde die de gebruiker heeft ingevoerd naar een getal en vermenigvuldigt het met 5 om de uren naar punten te converteren
-    let punten = parseInt(puntwaarde) * 5;
+    // Controleer of puntwaarde een getal is
+    let punten = parseInt(puntwaarde);
+    if (isNaN(punten)) {
+        return alert("Voer een geldige puntwaarde in!");
+    }
+    punten *= 5; // Converteer puntwaarde naar uren
 
-    // maakt een lijst element voor html en een CSS klasse genaamd taak voor de styling.
     let taak = document.createElement("li");
     taak.classList.add("taak");
 
-    // Dit is de html content die je krijgt te zien als je succesvol een taak toevoegd.
+    // SVG icoontje voor de punten
+    const puntIcoon = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-coins">
+        <circle cx="8" cy="8" r="6"/>
+        <path d="M18.09 10.37A6 6 0 1 1 10.34 18"/>
+        <path d="M7 6h1v4"/>
+        <path d="m16.71 13.88.7.71-2.82 2.82"/>
+    </svg>`;
+
     taak.innerHTML = `
     <div class="taak-tekst">
         <div class="box titel">${titel}</div>
+        <div class="box puntwaarde">${punten} ${puntIcoon}</div>
         <div class="box beschrijving">${beschrijving}</div>
-        <div class="box deadline">Deadline: <br> ${deadline}</div>
-        <div class="box puntwaarde">${punten} punten</div>
-
+        <div class="box deadline">Deadline: ${deadline}</div>
         <span class="status">Net begonnen</span>
         <button class="edit">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="white" style="width: 20px; height: 20px;">
@@ -36,68 +44,56 @@ document.getElementById("add-taak").addEventListener("click", function() {
             </svg>
         </button>
     </div>
-`;
-    
-    //voegt de achtergrondkleur toe voor de status wanneer die wordt aangemaakt.
+    `;
+
     let statusElement = taak.querySelector(".status");
     statusElement.style.backgroundColor = "#D0F0F1";
-
-    //dit voegt 'taak' toe aan 'taken-lijst'
     document.getElementById("taken-lijst").appendChild(taak);
 
-    // Dit leegt de invoervelden wanneer de gebruiker begint met typen.
+    // Reset de invoervelden
     document.getElementById("taak-titel").value = "";
     document.getElementById("taak-beschrijving").value = "";
     document.getElementById("taak-deadline").value = "";
     document.getElementById("taak-puntwaarde").value = "";
 
-    // Met deze functie verwijder je een taak.
+    // Verwijder taak
     taak.querySelector(".delete").addEventListener("click", function() {
         taak.remove();
     });
 
-    // met deze functie bewerk je een taak.
+    // Bewerk taak
     taak.querySelector(".edit").addEventListener("click", function() {
         let nieuweTitel = prompt("Nieuwe titel:", titel);
+        let nieuweUren = prompt("Nieuwe uren:", punten / 5); // Puntwaarde omrekenen naar uren
         let nieuweBeschrijving = prompt("Nieuwe beschrijving:", beschrijving);
         let nieuweDeadline = prompt("Nieuwe deadline:", deadline);
-        let nieuweUren = prompt("Nieuwe uren:", punten / 5); // De oude punten omrekenen naar uren, bij bewerken
-    
-        if (nieuweTitel) {
-            taak.querySelector(".titel").innerText = nieuweTitel;
-        }
-        if (nieuweBeschrijving) {
-            taak.querySelector(".beschrijving").innerText = nieuweBeschrijving;
-        }
-        if (nieuweDeadline) {
-            taak.querySelector(".deadline").innerHTML = `Deadline: <br> ${nieuweDeadline}`;
-        }
+
+        if (nieuweTitel) taak.querySelector(".titel").innerText = nieuweTitel;
         if (nieuweUren) {
             let nieuwePunten = parseInt(nieuweUren) * 5;
-            taak.querySelector(".puntwaarde").innerText = `${nieuwePunten} punten`;
+            taak.querySelector(".puntwaarde").innerHTML = `${nieuwePunten} ${puntIcoon}`;
+        }
+        if (nieuweBeschrijving) taak.querySelector(".beschrijving").innerText = nieuweBeschrijving;
+        if (nieuweDeadline) taak.querySelector(".deadline").innerHTML = `Deadline: <br> ${nieuweDeadline}`;
+    });
+
+    // Status wijzigen
+    taak.querySelector(".status").addEventListener("click", function() {
+        let status = ["Net begonnen", "In uitvoering", "Afgerond"];
+        let huidigeStatus = this.innerText;
+        let index = status.indexOf(huidigeStatus);
+        this.innerText = status[(index + 1) % status.length];
+
+        switch (this.innerText) {
+            case "Net begonnen":
+                this.style.backgroundColor = "#D0F0F1";
+                break;
+            case "In uitvoering":
+                this.style.backgroundColor = "#FFCF35";
+                break;
+            case "Afgerond":
+                this.style.backgroundColor = "#8DFF81";
+                break;
         }
     });
-    
-
-
-    // met deze functie kun je de status van een taak aanpassen.
-taak.querySelector(".status").addEventListener("click", function() {
-    let status = ["Net begonnen", "In uitvoering", "Afgerond"];
-    let huidigeStatus = this.innerText;
-    let index = status.indexOf(huidigeStatus);
-    this.innerText = status[(index + 1) % status.length];
-
-// Veranderd de achtergrondkleur afhankelijk van de status
-    switch (this.innerText) {
-        case "Net begonnen":
-            this.style.backgroundColor = "#D0F0F1";
-            break;
-        case "In uitvoering":
-            this.style.backgroundColor = "#FFCF35";
-            break;
-        case "Afgerond":
-            this.style.backgroundColor = "#8DFF81";
-            break;
-    }
-});
 });
