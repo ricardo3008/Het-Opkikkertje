@@ -1,3 +1,8 @@
+let totalPoints = parseInt(localStorage.getItem("totalPoints")) || 0;
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("total-points").textContent = totalPoints;
+});
+
 document.getElementById("add-taak").addEventListener("click", function() {
     let titel = document.getElementById("taak-titel").value;
     let beschrijving = document.getElementById("taak-beschrijving").value;
@@ -19,7 +24,7 @@ document.getElementById("add-taak").addEventListener("click", function() {
 
     // SVG icoontje voor de punten
     const puntIcoon = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-coins">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="8" cy="8" r="6"/>
         <path d="M18.09 10.37A6 6 0 1 1 10.34 18"/>
         <path d="M7 6h1v4"/>
@@ -50,35 +55,10 @@ document.getElementById("add-taak").addEventListener("click", function() {
     statusElement.style.backgroundColor = "#D0F0F1";
     document.getElementById("taken-lijst").appendChild(taak);
 
-    // Reset de invoervelden
-    document.getElementById("taak-titel").value = "";
-    document.getElementById("taak-beschrijving").value = "";
-    document.getElementById("taak-deadline").value = "";
-    document.getElementById("taak-puntwaarde").value = "";
-
-    // Verwijder taak
-    taak.querySelector(".delete").addEventListener("click", function() {
-        taak.remove();
-    });
-
-    // Bewerk taak
-    taak.querySelector(".edit").addEventListener("click", function() {
-        let nieuweTitel = prompt("Nieuwe titel:", titel);
-        let nieuweUren = prompt("Nieuwe uren:", punten / 5); // Puntwaarde omrekenen naar uren
-        let nieuweBeschrijving = prompt("Nieuwe beschrijving:", beschrijving);
-        let nieuweDeadline = prompt("Nieuwe deadline:", deadline);
-
-        if (nieuweTitel) taak.querySelector(".titel").innerText = nieuweTitel;
-        if (nieuweUren) {
-            let nieuwePunten = parseInt(nieuweUren) * 5;
-            taak.querySelector(".puntwaarde").innerHTML = `${nieuwePunten} ${puntIcoon}`;
-        }
-        if (nieuweBeschrijving) taak.querySelector(".beschrijving").innerText = nieuweBeschrijving;
-        if (nieuweDeadline) taak.querySelector(".deadline").innerHTML = `Deadline: <br> ${nieuweDeadline}`;
-    });
+    let isCompleted = false; // Track if task is completed
 
     // Status wijzigen
-    taak.querySelector(".status").addEventListener("click", function() {
+    statusElement.addEventListener("click", function() {
         let status = ["Net begonnen", "In uitvoering", "Afgerond"];
         let huidigeStatus = this.innerText;
         let index = status.indexOf(huidigeStatus);
@@ -87,13 +67,53 @@ document.getElementById("add-taak").addEventListener("click", function() {
         switch (this.innerText) {
             case "Net begonnen":
                 this.style.backgroundColor = "#D0F0F1";
+                isCompleted = false;
                 break;
             case "In uitvoering":
                 this.style.backgroundColor = "#FFCF35";
+                isCompleted = false;
                 break;
             case "Afgerond":
                 this.style.backgroundColor = "#8DFF81";
+                isCompleted = true;
                 break;
         }
     });
+
+    // Verwijder taak en update punten alleen als de taak is afgerond
+    taak.querySelector(".delete").addEventListener("click", function() {
+        if (isCompleted) {
+            totalPoints += punten; // Alleen optellen als "Afgerond"
+            updatePointsDisplay();
+        }
+        taak.remove();
+    });
+});
+
+// Functie om de totaalpunten bij te werken
+function updatePointsDisplay() {
+    document.getElementById("total-points").innerText = totalPoints;
+}
+
+// Functie om het totaal aantal punten bij te werken
+function updatePoints(points) {
+    totalPoints += points;
+    localStorage.setItem("totalPoints", totalPoints); // Sla de nieuwe waarde op in localStorage
+    document.getElementById("total-points").textContent = totalPoints; // Werk de weergave bij
+}
+
+// Event Listener voor het verwijderen van een taak
+document.addEventListener("click", function(event) {
+    if (event.target.classList.contains("delete")) {
+        let taakElement = event.target.closest(".taak");
+        let status = taakElement.querySelector(".status").textContent;
+
+        // Controleer of de taak de status "Afgerond" heeft voordat punten worden toegevoegd
+        if (status === "Afgerond") {
+            let punten = parseInt(taakElement.querySelector(".puntwaarde").textContent);
+            updatePoints(punten);
+        }
+
+        taakElement.remove(); // Verwijder de taak uit de DOM
+    }
 });
