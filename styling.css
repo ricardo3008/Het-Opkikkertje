@@ -1,3 +1,7 @@
+html, body {
+    zoom: 1;
+    transform: none;
+}
 body {
     margin: 0;
     padding: 0;
@@ -87,7 +91,6 @@ font: italic normal 900 16px/20px Questa Sans;
 letter-spacing: 0px;
 color: #000000;
 opacity: 1;
-padding: 0 !important;
 }
 
 .titel {
@@ -143,6 +146,19 @@ padding: 0 !important;
     position: absolute;
     z-index: 1;
 }
+.ollie-zittend {
+    height: 335px;
+    background: transparent url('images/ollie-zittend.png') 0% 0% no-repeat padding-box;
+    opacity: 1;
+    position: absolute;
+    z-index: 1;
+    background-size: contain;
+    width: 50%;
+    top: 40%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
 
 /* Oranje buttons */
 .textbox-wit {
@@ -380,4 +396,33 @@ ul {
 
 .nav-button:hover img {
     transform: scale(1.1);
+}
+
+.bank {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    position: relative;
+    width: 120px;
+    height: 120px;
+}
+.bank-container {
+    position: relative;
+    display: inline-block;
+}
+.bank-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+.bank-container p {
+    position: absolute;
+    top: 20%;
+    left: 52%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    font-weight: bold;
+    color: white; 
+    text-align: center;
+    pointer-events: none;
 }
